@@ -33,13 +33,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-analytics.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC_xmkI67ZokC5S3bs_I4Wn1ZHL9qbsy6E",
-    authDomain: "facepay-b93d2.firebaseapp.com",
-    projectId: "facepay-b93d2",
-    storageBucket: "facepay-b93d2.appspot.com",
-    messagingSenderId: "894989632635",
-    appId: "1:894989632635:web:a14b1f884f00e60bd20ede",
-    measurementId: "G-GPV0QHPX2T"
+    apiKey: "AIzaSyAt7cQPn2FBBMPIvU1X59pOLuznEI_BQgM",
+    authDomain: "facepay-2c2a2.firebaseapp.com",
+    databaseURL: "https://facepay-2c2a2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "facepay-2c2a2",
+    storageBucket: "facepay-2c2a2.firebasestorage.app",
+    messagingSenderId: "485307834167",
+    appId: "1:485307834167:web:dab077b1936d73c2bec4b2"
 };
 
 // Initialize Firebase
@@ -78,29 +78,62 @@ function Validation() {
 }
 
 //---------------------------------------AUTHENTICATION PROCESS--------------------------------------//
-function AuthenticateUser() {
+async function AuthenticateUser() {
     if (!Validation()) return;
 
-    const dbref = ref(db);
+    let emailVal = email.value.trim();
+    let emailKey = emailVal.toLowerCase().replaceAll('.', '').replaceAll('#', '').replaceAll('$', '').replaceAll('[', '').replaceAll(']', '');
 
-    // replacing dot(.) from the email to avoid error,
-    // Uncaught Error: child failed: path argument was an invalid path = "UsersList/user@email.com". Paths must be non-empty strings and can't contain ".", "#", "$", "[", or "]".
-    let emailString = email.value;
-    emailString = emailString.replaceAll('.', '');
-    emailString = emailString.replaceAll('#', '');
-    emailString = emailString.replaceAll('$', '');
-    emailString = emailString.replaceAll('[', '');
-    emailString = emailString.replaceAll(']', '');
-    
-    get(child(dbref, "UsersList/" + emailString)).then((user) => {
-        if (user.exists()) {
-            let dbpassword = decPass(user.val().password);
-            if (dbpassword == pass.value) login(user.val());
-            else swal("", "Email or Password is invalid!", "warning");
+    try {
+        let user = null;
+
+        // Try local backend API first
+        try {
+            const res = await fetch('/api/users/' + encodeURIComponent(emailVal));
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.exists && data.user) {
+                    user = data.user;
+                }
+            }
+        } catch (apiErr) {
+            console.log("API fetch failed, checking localStorage fallback:", apiErr);
+        }
+
+        // Fallback to localStorage
+        if (!user) {
+            const localUsers = JSON.parse(localStorage.getItem('facepay_users') || '{}');
+            if (localUsers[emailKey]) {
+                user = localUsers[emailKey];
+            }
+        }
+
+        // Fallback to Firebase
+        if (!user && db) {
+            try {
+                const snapshot = await get(child(ref(db), "UsersList/" + emailKey));
+                if (snapshot.exists()) {
+                    user = snapshot.val();
+                }
+            } catch (fbErr) {
+                console.log("Firebase query error:", fbErr);
+            }
+        }
+
+        if (user) {
+            let dbpassword = decPass(user.password);
+            if (dbpassword == pass.value) {
+                login(user);
+            } else {
+                swal("", "Email or Password is invalid!", "warning");
+            }
         } else {
             swal("User does not exist!", "To get started, please create an account!", "warning");
         }
-    });
+    } catch (error) {
+        console.error("Authentication error:", error);
+        swal("Error", "Authentication encountered an error. Please try again.", "error");
+    }
 }   
 
 //-------------------------------------------DECRYPT Process--------------------------------------------//

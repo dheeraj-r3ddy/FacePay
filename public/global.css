@@ -175,7 +175,7 @@ header {
   font-family: "Montserrat", sans-serif;
   color: white;
   margin: 0 2.5%;
-  padding: 1% 0 1% 0; 
+  padding: 1% 0 1% 0;
 }
 
 #bank-transfer-container .transfer-title {
@@ -200,7 +200,7 @@ header {
   color: grey;
 }
 
-.wallet-form {  
+.wallet-form {
   padding: 10px 15px;
 }
 
@@ -281,3 +281,857 @@ header {
 
 
 /* footer section ends */
+
+/* User Header Group & Bank Balance Button */
+.user-header-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0 10px;
+  position: relative;
+}
+
+.bank-balance-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #0073cf 0%, #004b91 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 115, 207, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  white-space: nowrap;
+}
+
+.bank-balance-btn:hover {
+  background: linear-gradient(135deg, #0088f5 0%, #00376d 100%);
+  box-shadow: 0 5px 12px rgba(0, 115, 207, 0.45);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.bank-balance-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.bank-balance-btn svg {
+  display: block;
+}
+
+/* Balance Modal Overlay */
+.balance-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 20, 45, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+.balance-modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 24px;
+  box-shadow: 0 25px 60px rgba(0, 25, 55, 0.35);
+  overflow: hidden;
+  animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: "Montserrat", sans-serif;
+}
+
+/* Modal Header */
+.balance-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid #f0f3f7;
+}
+
+.balance-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bank-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #eef6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-main-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #002447;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.modal-sub-title {
+  font-size: 12px;
+  color: #718096;
+  margin: 2px 0 0 0;
+}
+
+.modal-close-btn {
+  background: #f1f5f9;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #64748b;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Modal Body */
+.balance-modal-body {
+  padding: 20px 24px;
+}
+
+/* Digital Bank Card */
+.digital-bank-card {
+  background: linear-gradient(135deg, #001f3f 0%, #004e92 50%, #0073cf 100%);
+  border-radius: 18px;
+  padding: 20px 22px;
+  color: #ffffff;
+  margin-bottom: 20px;
+  box-shadow: 0 12px 28px rgba(0, 40, 80, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-glass-glow {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.card-bank-brand {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card-chip {
+  font-size: 20px;
+}
+
+.card-number-row {
+  margin-bottom: 16px;
+}
+
+.card-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 3px;
+}
+
+.card-val {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.card-val.acc-num {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.card-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.card-col.right-align {
+  text-align: right;
+}
+
+/* Balance Info List */
+.balance-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.balance-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.balance-row:hover {
+  transform: translateX(3px);
+  border-color: #cbd5e1;
+}
+
+.bal-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bal-icon-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.bal-icon-circle.bank-bg {
+  background: #e0f2fe;
+}
+
+.bal-icon-circle.wallet-bg {
+  background: #fef3c7;
+}
+
+.bal-name {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.bal-meta {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.bal-amount {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0284c7;
+}
+
+.wallet-row .bal-amount {
+  color: #d97706;
+}
+
+/* Modal Footer */
+.balance-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 24px 20px;
+  border-top: 1px solid #f0f3f7;
+  background: #fafbfc;
+}
+
+.refresh-bal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-bal-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.refresh-bal-btn .spin-icon.rotating {
+  animation: spin 0.8s linear infinite;
+}
+
+.done-bal-btn {
+  flex: 1;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #0073cf;
+  color: #ffffff;
+  border: none;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.done-bal-btn:hover {
+  background: #002447;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Tab Navigation & Active Highlights */
+.transaction-type-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 1% 5%;
+  background-color: white;
+}
+
+.transaction-type {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.transaction-type span.active-tab {
+  background-color: #ffc439 !important;
+  color: #002447 !important;
+  border-radius: 25px;
+  box-shadow: 0 3px 8px rgba(255, 196, 57, 0.35);
+}
+
+.qr-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quick-qr-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.my-qr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #f0f7ff;
+  border: 1px solid #bae0ff;
+  color: #0073cf;
+  border-radius: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.my-qr-btn:hover {
+  background: #0073cf;
+  color: #ffffff;
+  border-color: #0073cf;
+  transform: translateY(-1px);
+}
+
+.my-qr-btn.txns-btn {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.my-qr-btn.txns-btn:hover {
+  background: #002447;
+  color: #ffffff;
+  border-color: #002447;
+}
+
+/* Scan QR Container */
+#qr-scan-container {
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+}
+
+.qr-scan-box {
+  width: 50%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.qr-scan-header {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.qr-scan-header .transfer-title {
+  color: #002447;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+}
+
+.qr-sub-instruct {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.scanner-viewport-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  height: 240px;
+  background: #0f172a;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0073cf;
+}
+
+.qr-reader-frame {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+}
+
+.qr-reader-frame video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Scanner Laser & Guide */
+.scanner-overlay-guide {
+  position: absolute;
+  inset: 15px;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+}
+
+.scanner-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: #0084eb;
+  border-style: solid;
+}
+
+.corner-tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-top-left-radius: 6px; }
+.corner-tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-top-right-radius: 6px; }
+.corner-bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-bottom-left-radius: 6px; }
+.corner-br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-bottom-right-radius: 6px; }
+
+.scanner-laser-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(0, 115, 207, 0) 0%, #00ffcc 50%, rgba(0, 115, 207, 0) 100%);
+  box-shadow: 0 0 8px #00ffcc;
+  animation: laserScan 2s ease-in-out infinite alternate;
+}
+
+@keyframes laserScan {
+  0% { top: 5%; }
+  100% { top: 95%; }
+}
+
+.qr-scan-status-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0073cf;
+  margin: 10px 0;
+  text-align: center;
+  min-height: 18px;
+}
+
+.qr-scan-controls {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 12px;
+}
+
+.qr-cancel-btn, .qr-retry-btn {
+  flex: 1;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qr-cancel-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+
+.qr-cancel-btn:hover {
+  background: #e2e8f0;
+}
+
+.qr-retry-btn {
+  background: #0073cf;
+  border: none;
+  color: #ffffff;
+}
+
+.qr-retry-btn:hover {
+  background: #002447;
+}
+
+/* Demo Badges */
+.demo-qr-picker {
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  text-align: center;
+}
+
+.demo-picker-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.demo-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.demo-qr-badge {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #002447;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.demo-qr-badge:hover {
+  background: #e0f2fe;
+  border-color: #0073cf;
+  color: #0073cf;
+}
+
+/* Payment Confirmation Card */
+.confirm-modal-card {
+  max-width: 420px;
+}
+
+.confirm-details-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.confirm-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.confirm-value {
+  color: #002447;
+  font-weight: 600;
+}
+
+.confirm-value.font-bold {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.badge-pill {
+  background: #e0f2fe;
+  color: #0073cf;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.confirm-row.amount-row {
+  padding-top: 10px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 4px;
+}
+
+.confirm-amount-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.currency-symbol {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0073cf;
+}
+
+.confirm-amount-inp {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #002447;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 4px 8px;
+  width: 120px;
+  text-align: right;
+  outline: none;
+}
+
+.confirm-amount-inp:focus {
+  border-color: #0073cf;
+  box-shadow: 0 0 0 2px rgba(0, 115, 207, 0.2);
+}
+
+.confirm-security-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  color: #64748b;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 10px;
+  padding: 10px 12px;
+  line-height: 1.4;
+}
+
+.confirm-security-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* My QR Code Target */
+.qr-canvas-holder {
+  display: inline-flex;
+  padding: 14px;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  margin-top: 8px;
+}
+
+.my-qr-target img, .my-qr-target canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Transactions List */
+.txns-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.txn-card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.15s ease;
+}
+
+.txn-card-item:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.txn-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.txn-icon-pill {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.txn-icon-pill.sent { background: #fee2e2; }
+.txn-icon-pill.received { background: #dcfce7; }
+
+.txn-meta-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #002447;
+}
+
+.txn-meta-sub {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.txn-item-right {
+  text-align: right;
+}
+
+.txn-amount-text {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.txn-amount-text.sent { color: #dc2626; }
+.txn-amount-text.received { color: #16a34a; }
+
+.txn-id-sub {
+  font-size: 10px;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+  header {
+    padding: 12px 5%;
+  }
+
+  .main-container {
+    margin: 0 4%;
+  }
+
+  .transaction-container {
+    padding: 12px;
+  }
+
+  #wallet-transfer-container, #bank-transfer-container, #qr-scan-container {
+    flex-direction: column;
+  }
+
+  .transfer-type, .qr-scan-box {
+    width: 100% !important;
+  }
+
+  .imgBx {
+    width: 100% !important;
+    margin-top: 14px !important;
+  }
+
+  .transfer-detail {
+    margin: 0 !important;
+  }
+
+  .transaction-type {
+    gap: 8px;
+  }
+
+  .transaction-type span {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .quick-qr-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

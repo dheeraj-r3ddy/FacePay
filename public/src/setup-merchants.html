@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>FacePay Merchant Setup</title>
+
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: #f4f7fb;
+            font-family: Arial, sans-serif;
+            display: grid;
+            place-items: center;
+        }
+
+        .setup-card {
+            width: min(500px, 90%);
+            padding: 32px;
+            background: white;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 36, 71, 0.12);
+        }
+
+        h1 {
+            color: #002447;
+        }
+
+        p {
+            color: #687386;
+            line-height: 1.6;
+        }
+    </style>
+
+    <script
+        defer
+        type="module"
+        src="./seed-merchants.js"
+    ></script>
+</head>
+
+<body>
+
+    <div class="setup-card">
+        <h1>Creating Merchant Accounts</h1>
+
+        <p>
+            Please wait while FacePay creates the campus merchant
+            wallet accounts.
+        </p>
+    </div>
+
+</body>
+</html>

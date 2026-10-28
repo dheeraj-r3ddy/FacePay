@@ -78,6 +78,24 @@
     text-align: center;
   }
 
+  .verification-status {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font: 13px "Montserrat", sans-serif;
+    color: #52606d;
+  }
+
+  .verification-status p {
+    margin: 0;
+  }
+
+  .verification-status .complete {
+    color: #238636;
+    font-weight: 700;
+  }
+
   #videoElement {
       color: white;
       background-color: #666;

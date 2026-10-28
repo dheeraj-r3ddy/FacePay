@@ -81,21 +81,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-analytics.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC_xmkI67ZokC5S3bs_I4Wn1ZHL9qbsy6E",
-    authDomain: "facepay-b93d2.firebaseapp.com",
-    databaseURL: "https://facepay-b93d2-default-rtdb.firebaseio.com",
-    projectId: "facepay-b93d2",
-    storageBucket: "facepay-b93d2.appspot.com",
-    messagingSenderId: "894989632635",
-    appId: "1:894989632635:web:a14b1f884f00e60bd20ede",
-    measurementId: "G-GPV0QHPX2T"
+    apiKey: "AIzaSyAt7cQPn2FBBMPIvU1X59pOLuznEI_BQgM",
+    authDomain: "facepay-2c2a2.firebaseapp.com",
+    databaseURL: "https://facepay-2c2a2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "facepay-2c2a2",
+    storageBucket: "facepay-2c2a2.firebasestorage.app",
+    messagingSenderId: "485307834167",
+    appId: "1:485307834167:web:dab077b1936d73c2bec4b2"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Storage Database
-import { getStorage, ref as storeRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-storage.js";
 
 // Realtime Database
 import { getDatabase, ref, get, child, set, update } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-database.js";
@@ -112,72 +108,92 @@ file.addEventListener('change', function() {
     const imageChosen = this.files[0];
     chosenImageToUpload = imageChosen;
     if (imageChosen) {
-        const reader = new FileReader(); //FileReader is a predefined function of JS
-        reader.addEventListener('load', function() {
-            img.setAttribute('src', reader.result);
-        });
-        reader.readAsDataURL(imageChosen);
         uploadProcess();
     }
 });
 
 
 
-//-----------------------------------------Uploading Files (Image) to Firebase Storage Database--------------------------------------------//
+//-----------------------------------------Uploading Files (Image)--------------------------------------------//
 let emailString = currentUser.email;
-emailString = emailString.replaceAll('.', '');
-emailString = emailString.replaceAll('#', '');
-emailString = emailString.replaceAll('$', '');
-emailString = emailString.replaceAll('[', '');
-emailString = emailString.replaceAll(']', '');
+emailString = emailString.replaceAll('.', '').replaceAll('#', '').replaceAll('$', '').replaceAll('[', '').replaceAll(']', '');
 
 let URL = currentUser.profileImgURL;
 
-const uploadProcess = async () => {
-    const storage = getStorage();
-    const storageRef = storeRef(storage, "Profile Images/profile-img@" + emailString);
-    const uploadTask = uploadBytesResumable(storageRef, chosenImageToUpload);
-    const uploadMessage = document.getElementById('upload-text');
-    
-    uploadTask.on('state-changed', (snapshot) => {
-        const uploadProgress = (snapshot.bytesTransferred / snapshot.totalBytes).toFixed(4) * 100;
-        uploadMessage.classList.replace('hide', 'unhide');
-        uploadMessage.innerHTML = "* * Uploading " + uploadProgress + "% * *";
-        document.getElementById('save-btn').classList.replace('unhide', 'hide');
-
-    }, (error) => {
-        swal("Image not uploaded!", "", "error");
-    }, () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((imageURL) => {
-            URL = imageURL;
-            setURLtoRealDB(imageURL);
-            setImgToLocalStorage(imageURL);
-            swal("Photo uploaded successfully!", "", "success");
-            uploadMessage.classList.replace('unhide', 'hide');
-            document.getElementById('save-btn').classList.replace('hide', 'unhide');
-        });
+function compressImageToDataUrl(imageFile) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("The selected image could not be read."));
+        reader.onload = () => {
+            const image = new Image();
+            image.onerror = () => reject(new Error("The selected file is not a valid image."));
+            image.onload = () => {
+                const maxDimension = 512;
+                const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.max(1, Math.round(image.width * scale));
+                canvas.height = Math.max(1, Math.round(image.height * scale));
+                const canvasContext = canvas.getContext('2d');
+                canvasContext.drawImage(image, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL('image/jpeg', 0.8));
+            };
+            image.src = reader.result;
+        };
+        reader.readAsDataURL(imageFile);
     });
 }
 
+const uploadProcess = async () => {
+    const uploadMessage = document.getElementById('upload-text');
+    uploadMessage.classList.replace('hide', 'unhide');
+    uploadMessage.innerHTML = "* * Saving Photo... * *";
 
+    try {
+        const imageURL = await compressImageToDataUrl(chosenImageToUpload);
+        URL = imageURL;
+        setImgToLocalStorage(imageURL);
+        img.setAttribute('src', imageURL);
+
+        // Update server database
+        try {
+            await fetch('/api/update-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: currentUser.email, profileImgURL: imageURL })
+            });
+        } catch (apiErr) {
+            console.log("Server profile update error:", apiErr);
+        }
+
+        setURLtoRealDB(imageURL);
+
+        swal("Photo uploaded successfully!", "", "success");
+        document.getElementById('save-btn').classList.replace('hide', 'unhide');
+    } catch (uploadError) {
+        console.error("Profile image processing error:", uploadError);
+        swal("Photo upload failed", uploadError.message, "error");
+    } finally {
+        uploadMessage.classList.replace('unhide', 'hide');
+    }
+}
 
 //-----------------------------------------Setting Image URL to Firebase Realtime Database--------------------------------------------//
 const setURLtoRealDB = (URL) => {
-    update(ref(realdb, "UsersList/" + emailString), {
-        profileImgURL: URL
-    })
+    try {
+        update(ref(realdb, "UsersList/" + emailString), {
+            profileImgURL: URL
+        }).catch(() => {});
+    } catch (e) {}
 }
-
-
 
 //-----------------------------------------Setting Image URL to Local/Session Storage--------------------------------------------//
 function setImgToLocalStorage(URL) {
     currentUser.profileImgURL = URL;
 
     if (keepLoggedIn == "yes") {
-        currentUser = localStorage.setItem('user', JSON.stringify(currentUser));
+        localStorage.setItem('user', JSON.stringify(currentUser));
     } else {
-        currentUser = sessionStorage.setItem('user', JSON.stringify(currentUser));
+        sessionStorage.setItem('user', JSON.stringify(currentUser));
     }
 }
 

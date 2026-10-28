@@ -37,17 +37,30 @@ const logout = () => {
     window.location.replace("../index.html");
 }
 
+const balanceBtn = document.getElementById('balanceBtn');
+const showMyQrBtn = document.getElementById('showMyQrBtn');
+const viewTxnsBtn = document.getElementById('viewTxnsBtn');
+
 //-----------------------------------------WINDOWS LOADS--------------------------------------------//
 window.onload = function () {
     getUserName();
     // null is when user is not logged in
     if (currentUser == null) {
-        profile.classList.replace("profile-class", "hide");
+        if (profile) profile.classList.replace("profile-class", "hide");
+        if (balanceBtn) balanceBtn.classList.replace("unhide", "hide");
+        if (showMyQrBtn) showMyQrBtn.classList.replace("unhide", "hide");
+        if (viewTxnsBtn) viewTxnsBtn.classList.replace("unhide", "hide");
         //redirecting next home button to login
-        homeButton.addEventListener('click', redirectToLogin);
+        if (homeButton) homeButton.addEventListener('click', redirectToLogin);
     } else {
-        signup.classList.replace("signup-class", "hide");
-        login.innerText = "Log Out";
-        login.addEventListener('click', logout);
+        if (signup) signup.classList.replace("signup-class", "hide");
+        if (profile) profile.classList.replace("hide", "profile-class");
+        if (balanceBtn) balanceBtn.classList.replace("hide", "unhide");
+        if (showMyQrBtn) showMyQrBtn.classList.replace("hide", "unhide");
+        if (viewTxnsBtn) viewTxnsBtn.classList.replace("hide", "unhide");
+        if (login) {
+            login.innerText = "Log Out";
+            login.addEventListener('click', logout);
+        }
     }
 }

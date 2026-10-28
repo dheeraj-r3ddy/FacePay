@@ -9,6 +9,7 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat:500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="face-verification.css">
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <script defer src="./face-api.min.js"></script>
         <script defer src="./face-verification.js"></script>
     </head>
@@ -20,12 +21,17 @@
 
         <div class="message-container">
             <p id="message">Loading...</p>
+            <div class="verification-status" aria-live="polite">
+                <p id="detection-status">Face detected -</p>
+                <p id="liveness-status">Liveness verified -</p>
+                <p id="match-status">Face matched -</p>
+            </div>
         </div>
 
         <main id="main">
             <!-- use below line code for rectangular view and also make the border-radius 25px -->
             <!-- <video id="videoElement" width="500px" height="375px" autoplay muted>Camera is not supported in this browser! Try using another browser.</video> -->
-            <video id="videoElement" width="400px" height="400px" autoplay muted>Camera is not supported in this browser! Try using another browser.</video>
+            <video id="videoElement" width="400px" height="400px" autoplay muted playsinline>Camera is not supported in this browser! Try using another browser.</video>
         </main>
         
         <footer id="footer">

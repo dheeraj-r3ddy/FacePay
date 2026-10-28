@@ -4,11 +4,14 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>FacePay</title>
-        <meta name="description" content="">
+        <meta name="description" content="FacePay - Facial Authentication & QR Payment System">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="global.css">
         <link rel="icon" href="./images/favicon.png" type="image/icon type">
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:500,600,700&display=swap" rel="stylesheet">
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="./src/html5-qrcode.min.js"></script>
+        <script src="./src/qrcode.min.js"></script>
         <script defer type="text/javascript" src="./script.js"></script>
         <script defer type="module" src="./src/logout.js"></script>
     </head>
@@ -17,9 +20,17 @@
             <a class="logo"><img class="logo-img" src="./images/logo.png" alt="logo" onclick="clickLogoImg()"></a>
             <a id="signup" class="signup-class">Sign Up</a>
             <a id="login" class="login-class">Log In</a>
-            <a id="profile" class="profile-class">
-                <img class="profile-logo" id="profileLogo" src="./images/profileM.jpg" alt="profile"/>
-            </a>
+            <div class="user-header-group">
+                <a id="profile" class="profile-class" title="View Profile">
+                    <img class="profile-logo" id="profileLogo" src="./images/profileM.jpg" alt="profile"/>
+                </a>
+                <button id="balanceBtn" class="bank-balance-btn hide" title="Check Account Balance" aria-label="Check Balance">
+                    <svg class="bank-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 1L2 6v2h20V6L12 1zm-7 8v8h2V9H5zm5 0v8h2V9h-2zm5 0v8h2V9h-2zm5 0v8h2V9h-2zM2 19v2h20v-2H2z"/>
+                    </svg>
+                    <span class="balance-btn-label">Balance</span>
+                </button>
+            </div>
         </header>
 
         <main>
@@ -32,61 +43,129 @@
 
                 <div class="transaction-type-container">
                     <ul class="transaction-type">
-                        <li><span id="wallet-switch">Wallet Transfer</span></li>
+                        <li><span id="wallet-switch" class="active-tab">Wallet Transfer</span></li>
                         <li><span id="bank-switch">Bank Transfer</span></li>
+                        <li>
+                            <span id="qr-switch" class="qr-tab-btn">
+                                <svg class="tab-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                    <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm13 3v3h-3v-3h3zm0-3h3v3h-3v-3zm3 3h-3v3h3v-3zm-6-3v-3h3v3h-3zm-1-8h4V5h-4v2zm0 10h4v-2h-4v2zM6 6h2v2H6V6zm10 0h2v2h-2V6zM6 16h2v2H6v-2z"/>
+                                </svg>
+                                Scan QR
+                            </span>
+                        </li>
                     </ul>
+
+                    <div class="quick-qr-actions">
+                        <button id="showMyQrBtn" class="my-qr-btn hide" title="Show My FacePay QR to receive payments">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                                <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm13-2h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/>
+                            </svg>
+                            <span>Receive Money</span>
+                        </button>
+                        <button id="viewTxnsBtn" class="my-qr-btn txns-btn hide" title="View Transaction History">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                                <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+                            </svg>
+                            <span>History</span>
+                        </button>
+                    </div>
                 </div>
 
-                
                 <div class="transaction-container">
 
+                    <!-- Wallet Transfer Container -->
                     <div id="wallet-transfer-container" class="unhide">
                         <div id="wallet-transfer" class="transfer-type">
                             <p class="transfer-title">Wallet Transfer</p>                        
                             <div class="transfer-detail">
                                 <div class="transfer-form wallet-form">
                                     <span class="box-title">Mobile Number</span>
-                                    <input class="box-input" type="text" placeholder="Enter Mobile Number"/>
+                                    <input id="walletPhoneInp" class="box-input" type="text" placeholder="Enter Mobile Number"/>
                                 </div>
                                 <div class="transfer-form wallet-form">
-                                    <span class="box-title">FacePay-ID</span>
-                                    <input class="box-input" type="text" placeholder="FacePay-ID"/>
+                                    <span class="box-title">UPI ID</span>
+                                    <input id="walletPayIdInp" class="box-input" type="text" placeholder="UPI ID (e.g. user@facepay)"/>
                                 </div>
                                 <div class="transfer-form wallet-form last-form-input-wallet">
                                     <span class="box-title">Amount</span>
-                                    <input class="box-input" type="text" placeholder="Enter Amount"/>
+                                    <input id="walletAmountInp" class="box-input" type="number" placeholder="Enter Amount" min="1" step="any"/>
                                 </div>        
                             </div>    
                         </div>
                         <div class="imgBx">
-                            <img src="../images/wallet.jpg">
+                            <img src="../images/wallet.jpg" alt="Wallet">
                         </div>       
                     </div>
 
+                    <!-- Bank Transfer Container -->
                     <div id="bank-transfer-container" class="hide">
                         <div class="imgBx">
-                            <img src="../images/bank.jpg">
+                            <img src="../images/bank.jpg" alt="Bank">
                         </div> 
                         <div id="bank-transfer" class="transfer-type">
                             <p class="transfer-title">Bank Transfer</p>                        
                             <div class="transfer-detail">
                                 <div class="transfer-form bank-form">
                                     <span class="box-title">Beneficiary Name</span>
-                                    <input class="box-input" type="text" placeholder="Name on Bank Account"/>
+                                    <input id="bankNameInp" class="box-input" type="text" placeholder="Name on Bank Account"/>
                                 </div>
                                 <div class="transfer-form bank-form">
                                     <span class="box-title">Account Number</span>
-                                    <input class="box-input" type="text" placeholder="Account Number"/>
+                                    <input id="bankAccInp" class="box-input" type="text" placeholder="Account Number"/>
                                 </div>
                                 <div class="transfer-form bank-form">
                                     <span class="box-title">IFSC Code</span>
-                                    <input class="box-input" type="text" placeholder="IFSC Code"/>
+                                    <input id="bankIfscInp" class="box-input" type="text" placeholder="IFSC Code"/>
                                 </div>
                                 <div class="transfer-form bank-form last-form-input-bank">
                                     <span class="box-title">Amount</span>
-                                    <input class="box-input" type="text" placeholder="Enter Amount"/>
+                                    <input id="bankAmountInp" class="box-input" type="number" placeholder="Enter Amount" min="1" step="any"/>
                                 </div>     
                             </div>      
+                        </div>
+                    </div>
+
+                    <!-- Scan QR Container -->
+                    <div id="qr-scan-container" class="hide">
+                        <div class="qr-scan-box">
+                            <div class="qr-scan-header">
+                                <p class="transfer-title" style="margin-bottom: 4px;">Scan FacePay QR Code</p>
+                                <p class="qr-sub-instruct">Position the QR code inside the camera frame to pay</p>
+                            </div>
+
+                            <div class="scanner-viewport-wrapper">
+                                <div id="qr-reader" class="qr-reader-frame"></div>
+                                <div id="scannerOverlayGuide" class="scanner-overlay-guide">
+                                    <div class="scanner-corner corner-tl"></div>
+                                    <div class="scanner-corner corner-tr"></div>
+                                    <div class="scanner-corner corner-bl"></div>
+                                    <div class="scanner-corner corner-br"></div>
+                                    <div class="scanner-laser-line"></div>
+                                </div>
+                            </div>
+
+                            <div id="qr-scan-status" class="qr-scan-status-text">
+                                Camera ready. Align FacePay QR within frame.
+                            </div>
+
+                            <div class="qr-scan-controls">
+                                <button type="button" id="cancelQrScanBtn" class="qr-cancel-btn">Cancel</button>
+                                <button type="button" id="retryQrScanBtn" class="qr-retry-btn hide">Try Again</button>
+                            </div>
+
+                            <!-- Demo Quick Test QR Badges -->
+                            <div class="demo-qr-picker">
+                                <span class="demo-picker-title">⚡ Quick Campus Demo QRs:</span>
+                                <div class="demo-badges">
+                                    <button type="button" class="demo-qr-badge" data-id="FP-CANTEEN-001" data-name="Campus Canteen" data-mobile="9876543210" data-amount="120">Campus Canteen (₹120)</button>
+                                    <button type="button" class="demo-qr-badge" data-id="FP-BOOKSTORE-002" data-name="Campus Book Store" data-mobile="9876543211" data-amount="350">Book Store (₹350)</button>
+                                    <button type="button" class="demo-qr-badge" data-id="FP-CANTEEN-001" data-name="Campus Canteen" data-mobile="9876543210" data-amount="">Custom Amount QR</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="imgBx qr-img-side">
+                            <img src="../images/signupM.jpeg" alt="QR Payment">
                         </div>
                     </div>
                 
@@ -99,5 +178,220 @@
                 <button id="home-next-btn" class="submit-btn" onclick="clickHomeNextBtn()">Next</button>
             </div>
         </footer>
+
+        <!-- Balance Modal Overlay -->
+        <div id="balanceModal" class="balance-modal-overlay hide">
+            <div class="balance-modal-card">
+                <div class="balance-modal-header">
+                    <div class="balance-title-wrap">
+                        <div class="bank-icon-badge">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="#0073cf">
+                                <path d="M12 1L2 6v2h20V6L12 1zm-7 8v8h2V9H5zm5 0v8h2V9h-2zm5 0v8h2V9h-2zm5 0v8h2V9h-2zM2 19v2h20v-2H2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="modal-main-title">Account Balance</h3>
+                            <p class="modal-sub-title">FacePay Bank &amp; Wallet status</p>
+                        </div>
+                    </div>
+                    <button id="closeBalanceModal" class="modal-close-btn" aria-label="Close">&times;</button>
+                </div>
+
+                <div class="balance-modal-body">
+                    <!-- Digital Bank Card Visual -->
+                    <div class="digital-bank-card">
+                        <div class="card-glass-glow"></div>
+                        <div class="card-header-row">
+                            <span class="card-bank-brand">FacePay Premier Bank</span>
+                            <span class="card-chip">💳</span>
+                        </div>
+                        <div class="card-number-row">
+                            <span class="card-label">Account Number</span>
+                            <span id="modalAccNumber" class="card-val acc-num">•••• •••• ••••</span>
+                        </div>
+                        <div class="card-footer-row">
+                            <div class="card-col">
+                                <span class="card-label">Account Holder</span>
+                                <span id="modalAccHolder" class="card-val">User</span>
+                            </div>
+                            <div class="card-col right-align">
+                                <span class="card-label">UPI ID</span>
+                                <span id="modalFacePayId" class="card-val">user@facepay</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Balance Details Breakdown -->
+                    <div class="balance-info-list">
+                        <div class="balance-row bank-row">
+                            <div class="bal-left">
+                                <div class="bal-icon-circle bank-bg">🏦</div>
+                                <div>
+                                    <span class="bal-name">Primary Bank Balance</span>
+                                    <span class="bal-meta">Linked Savings Account</span>
+                                </div>
+                            </div>
+                            <div class="bal-right">
+                                <span id="modalBankBalance" class="bal-amount">₹50,000.00</span>
+                            </div>
+                        </div>
+
+                        <div class="balance-row wallet-row">
+                            <div class="bal-left">
+                                <div class="bal-icon-circle wallet-bg">👛</div>
+                                <div>
+                                    <span class="bal-name">FacePay Wallet</span>
+                                    <span class="bal-meta">Face-Auth Instant Wallet</span>
+                                </div>
+                            </div>
+                            <div class="bal-right">
+                                <span id="modalWalletBalance" class="bal-amount">₹5,000.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="balance-modal-footer">
+                    <button id="refreshBalanceBtn" class="refresh-bal-btn">
+                        <svg id="refreshSpinner" class="spin-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                        <span>Refresh</span>
+                    </button>
+                    <button id="doneBalanceBtn" class="done-bal-btn">Done</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Confirmation Modal Overlay -->
+        <div id="paymentConfirmationModal" class="balance-modal-overlay hide">
+            <div class="balance-modal-card confirm-modal-card">
+                <div class="balance-modal-header">
+                    <div class="balance-title-wrap">
+                        <div class="bank-icon-badge" style="background:#e0f2fe;">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="#0073cf">
+                                <path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm13 3v3h-3v-3h3zm0-3h3v3h-3v-3zm3 3h-3v3h3v-3zm-6-3v-3h3v3h-3zm-1-8h4V5h-4v2zm0 10h4v-2h-4v2zM6 6h2v2H6V6zm10 0h2v2h-2V6zM6 16h2v2H6v-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="modal-main-title">Confirm Payment</h3>
+                            <p class="modal-sub-title">Review recipient &amp; amount</p>
+                        </div>
+                    </div>
+                    <button id="closeConfirmModal" class="modal-close-btn" aria-label="Close">&times;</button>
+                </div>
+
+                <div class="balance-modal-body">
+                    <div class="confirm-details-card">
+                        <div class="confirm-row">
+                            <span class="confirm-label">Recipient</span>
+                            <span id="confirmRecipientName" class="confirm-value font-bold">Campus Canteen</span>
+                        </div>
+                        <div class="confirm-row">
+                            <span class="confirm-label">UPI ID</span>
+                            <span id="confirmRecipientId" class="confirm-value">FP-CANTEEN-001</span>
+                        </div>
+                        <div class="confirm-row">
+                            <span class="confirm-label">Mobile</span>
+                            <span id="confirmRecipientMobile" class="confirm-value">9876543210</span>
+                        </div>
+                        <div class="confirm-row">
+                            <span class="confirm-label">Payment Method</span>
+                            <span id="confirmPaymentMethod" class="confirm-value badge-pill">FacePay QR</span>
+                        </div>
+                        <div class="confirm-row amount-row">
+                            <span class="confirm-label">Amount</span>
+                            <div class="confirm-amount-wrap">
+                                <span class="currency-symbol">₹</span>
+                                <input type="number" id="confirmAmountInput" class="confirm-amount-inp" placeholder="0.00" min="1" step="any" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="confirm-security-note">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="#0073cf">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                        </svg>
+                        <span>Live Face Authentication will be required in the next step to authorize this payment.</span>
+                    </div>
+                </div>
+
+                <div class="balance-modal-footer">
+                    <button id="cancelConfirmBtn" class="refresh-bal-btn" style="color:#ef4444; border-color:#fca5a5;">Cancel</button>
+                    <button id="proceedToFaceAuthBtn" class="done-bal-btn" style="background:#ffc439; color:#002447;">Proceed to Face Auth &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- My QR / Receive Money Modal Overlay -->
+        <div id="myQrModal" class="balance-modal-overlay hide">
+            <div class="balance-modal-card">
+                <div class="balance-modal-header">
+                    <div class="balance-title-wrap">
+                        <div class="bank-icon-badge" style="background:#fef3c7;">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="#d97706">
+                                <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm13-2h-2v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="modal-main-title">My FacePay QR</h3>
+                            <p class="modal-sub-title">Scan to pay you directly</p>
+                        </div>
+                    </div>
+                    <button id="closeMyQrModal" class="modal-close-btn" aria-label="Close">&times;</button>
+                </div>
+
+                <div class="balance-modal-body" style="text-align: center;">
+                    <div class="qr-canvas-holder">
+                        <div id="myQrCodeTarget" class="my-qr-target"></div>
+                    </div>
+                    <h4 id="myQrUserName" class="my-qr-name" style="margin-top: 14px; font-weight:700; color:#002447;">User Name</h4>
+                    <p id="myQrUserPayId" class="my-qr-payid" style="color:#0073cf; font-weight:600; font-size:13px;">user@facepay</p>
+                    <p id="myQrUserPhone" class="my-qr-phone" style="color:#64748b; font-size:12px;">+91 9876543210</p>
+
+                    <div class="my-qr-amount-customizer" style="margin-top: 15px; padding-top: 12px; border-top: 1px dashed #e2e8f0;">
+                        <label style="font-size: 11px; font-weight: 700; color: #475569; display:block; margin-bottom: 5px;">REQUEST SPECIFIC AMOUNT (OPTIONAL):</label>
+                        <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                            <span style="font-weight:700; color:#0073cf;">₹</span>
+                            <input type="number" id="myQrCustomAmount" placeholder="Enter amount" style="padding: 6px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family:'Montserrat', sans-serif; font-size:13px; width:160px;" min="1" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="balance-modal-footer">
+                    <button id="closeMyQrBtn" class="done-bal-btn">Done</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions History Modal Overlay -->
+        <div id="transactionsModal" class="balance-modal-overlay hide">
+            <div class="balance-modal-card" style="max-width: 500px;">
+                <div class="balance-modal-header">
+                    <div class="balance-title-wrap">
+                        <div class="bank-icon-badge" style="background:#e0e7ff;">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="#4338ca">
+                                <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="modal-main-title">Transaction History</h3>
+                            <p class="modal-sub-title">Past FacePay payments &amp; transfers</p>
+                        </div>
+                    </div>
+                    <button id="closeTxnsModal" class="modal-close-btn" aria-label="Close">&times;</button>
+                </div>
+
+                <div class="balance-modal-body" style="max-height: 380px; overflow-y: auto; padding: 12px 20px;">
+                    <div id="txnsListContainer" class="txns-list-container">
+                        <p style="text-align: center; color: #94a3b8; font-size: 13px; padding: 20px 0;">No transactions yet.</p>
+                    </div>
+                </div>
+
+                <div class="balance-modal-footer">
+                    <button id="closeTxnsBtn" class="done-bal-btn">Close</button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

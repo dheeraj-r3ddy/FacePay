@@ -4,40 +4,71 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Thanks for using FacePay</title>
+        <title>Payment Receipt - FacePay</title>
         <link rel="icon" href="../images/favicon.png" type="image/icon type">
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:500&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:500,600,700,800&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./payment.css">
-        <script defer src="./payment.js" ></script>
+        <script defer src="./payment.js"></script>
     </head>
     <body>
         <header id="header">
-            <a class="logo"><img class="logo-img" src="../images/logo.png" alt="logo" onclick="clickLogoImg()"></a>
+            <a class="logo" id="logo"><img class="logo-img" src="../images/logo.png" alt="logo" onclick="clickHomeBtn()"></a>
         </header>
 
         <main id="main">
-            <p id="thanks-message" class="message">Thank you for using FacePay.</p>
-            <img class="success" src="../images/success.gif" alt="success-icon">
-            <div class="failed hide">
-                <script defer src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-                <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_ddxv3rxw.json" 
-                    mode="bounce" 
-                    background="transparent"  
-                    speed="1.25"  
-                    style="width: 150px; height: 150px; margin: 1.25rem auto;"
-                    loop autoplay>
-                </lottie-player>
-            </div>
-            <p id="success-message" class="message">Success!</p>
-            <p id="request-message" class="message">Your request has been processed successfully.</p>
-            <p id="failure-reason" class="message hide">Face was not verified successfully.</p>
-            <p id="redirecting-message" class="message">You will be redirected to home page shortly or click 'Home' to return to home page.</p>
-        </main>
+            <!-- Success Container -->
+            <div id="success-view" class="receipt-card">
+                <div class="success-icon-badge">
+                    <svg viewBox="0 0 24 24" width="44" height="44" fill="#16a34a">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </div>
+                <h2 id="success-title" class="receipt-title">Payment Successful</h2>
+                <div id="receipt-amount" class="receipt-amount">₹0.00</div>
 
-        <footer id="footer">
-            <div class="submit-container">
-                <button id="home-btn" class="submit-btn" onclick="clickHomeBtn()">Home</button>
+                <div class="receipt-details-table">
+                    <div class="receipt-row">
+                        <span class="r-label">Paid to</span>
+                        <span id="receipt-recipient" class="r-value font-bold">Campus Canteen</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="r-label">UPI ID</span>
+                        <span id="receipt-payid" class="r-value">FP-CANTEEN-001</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="r-label">Transaction ID</span>
+                        <span id="receipt-txnid" class="r-value code-font">FP-TXN-XXXXXXXX</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="r-label">Payment Method</span>
+                        <span id="receipt-method" class="r-value badge">QR + Face Authentication</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span class="r-label">Date &amp; Time</span>
+                        <span id="receipt-timestamp" class="r-value">28 Aug 2026, 11:35 PM</span>
+                    </div>
+                </div>
+
+                <div class="receipt-actions">
+                    <button id="done-btn" class="primary-receipt-btn" onclick="clickHomeBtn()">Done</button>
+                    <button id="view-txns-btn" class="secondary-receipt-btn" onclick="clickTxnsBtn()">View Transactions</button>
+                </div>
             </div>
-        </footer>
+
+            <!-- Failure Container -->
+            <div id="failure-view" class="receipt-card hide">
+                <div class="failure-icon-badge">
+                    <svg viewBox="0 0 24 24" width="44" height="44" fill="#dc2626">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                </div>
+                <h2 class="receipt-title" style="color: #dc2626;">Payment Failed</h2>
+                <p id="failure-reason" class="failure-desc">Face was not verified successfully or balance was insufficient.</p>
+
+                <div class="receipt-actions">
+                    <button class="primary-receipt-btn" onclick="clickHomeBtn()">Return to Home</button>
+                </div>
+            </div>
+        </main>
     </body>
 </html>

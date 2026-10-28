@@ -1,6 +1,11 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "express": "^4.18.1",
-    "nodemon": "^2.0.16"
+    "dotenv": "^17.4.2",
+    "express": "^4.22.2",
+    "nodemon": "^2.0.16",
+    "razorpay": "^2.9.8"
   }
 }

@@ -1,104 +1,199 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hide {
+  display: none !important;
+}
+
+.unhide {
+  display: block !important;
+}
+
+header {
+  text-align: center;
+  padding: 20px 5%;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.logo-img {
+  width: auto;
+  height: 50px;
+  cursor: pointer;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 16px;
+}
+
+.receipt-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 460px;
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: 0 20px 50px rgba(0, 36, 71, 0.12);
+  text-align: center;
+  animation: receiptSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.success-icon-badge {
+  width: 72px;
+  height: 72px;
+  background: #dcfce7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.failure-icon-badge {
+  width: 72px;
+  height: 72px;
+  background: #fee2e2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.receipt-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #002447;
+  margin-bottom: 6px;
+}
+
+.receipt-amount {
+  font-size: 32px;
+  font-weight: 800;
+  color: #16a34a;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.receipt-details-table {
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  border-radius: 18px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.r-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.r-value {
+  color: #002447;
+  font-weight: 600;
+}
+
+.r-value.font-bold {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.r-value.code-font {
+  font-family: monospace;
+  font-size: 12px;
+  color: #0073cf;
+}
+
+.r-value.badge {
+  background: #e0f2fe;
+  color: #0073cf;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.receipt-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.primary-receipt-btn, .secondary-receipt-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primary-receipt-btn {
+  background: #ffc439;
+  color: #002447;
+  border: none;
+  box-shadow: 0 4px 12px rgba(255, 196, 57, 0.35);
+}
+
+.primary-receipt-btn:hover {
+  background: #fba81c;
+  transform: translateY(-1px);
+}
+
+.secondary-receipt-btn {
+  background: #f1f5f9;
+  color: #002447;
+  border: 1px solid #cbd5e1;
+}
+
+.secondary-receipt-btn:hover {
+  background: #e2e8f0;
+}
+
+.failure-desc {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+@keyframes receiptSlideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media screen and (max-width: 480px) {
+  .receipt-card {
+    padding: 24px 18px;
   }
-
-  .hide {
-    display: none;
+  .receipt-actions {
+    flex-direction: column;
   }
-
-  .unhide {
-    display: block;
-  }
-
-  /* header section starts */
-  
-  header {
-    text-align: center;
-    padding: 1% 5% 1% 5%;
-    background-color: white;
-  }
-
-  .logo-img {
-    width: auto;
-    height: 50px;
-  }
-
-  /* header section ends */
-
-  /* main section starts */
-
-  main {
-    width: auto;
-    text-align: center;
-    margin: 5% 10% -1% 10%;
-    padding: 0% 5% 0% 5%;
-  }
-
-  .message {
-    text-align: center;
-    font-family: "Montserrat", sans-serif;
-  }
-    
-  #thanks-message {
-    font-size: 1.25rem;
-    padding: 0 0 0.5rem 0;
-  }
-
-  #success-message {
-    font-size: 2.125rem;
-    font-weight: 700;
-    color: #4caf50;
-  }
-  
-  #request-message {
-    font-size: 1.25rem;
-    padding: 0 0 2.5rem 0;
-  }
-
-  #failure-reason {
-    font-size: 1.25rem;
-    color: red;
-    padding: 0 0 2.5rem 0;
-  }
-  
-  #redirecting-message {
-    font-size: 0.8rem;
-  }
-  
-
-  /* main section ends */
-
-  /* footer section starts */
-
-  .submit-container {
-    margin: 1% 10%;
-    padding: 1% 5% 1% 5%;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .submit-btn {
-    height: 40px;
-    width: 150px;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    text-decoration: none;
-    color: white;
-    background-color: #0073cf;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: background-color 0.3s ease 0s;
-    letter-spacing: 1px;
-  }
-
-  .submit-btn:hover {
-    background-color: #002447;
-  }
-
-  /* footer section ends */
+}

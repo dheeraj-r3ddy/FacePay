@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Scan & Pay | FacePay</title>
+
+    <link rel="icon" href="../images/favicon.png" type="image/png">
+
+    <link
+        href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="./scan-pay.css">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-database-compat.js"></script>
+
+    <!-- QR scanner library -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt7cQPn2FBBMPIvU1X59pOLuznEI_BQgM",
+            authDomain: "facepay-2c2a2.firebaseapp.com",
+            databaseURL: "https://facepay-2c2a2-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "facepay-2c2a2",
+            storageBucket: "facepay-2c2a2.firebasestorage.app",
+            messagingSenderId: "485307834167",
+            appId: "1:485307834167:web:dab077b1936d73c2bec4b2"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+    </script>
+
+    <script defer src="./scan-pay.js"></script>
+</head>
+
+<body>
+
+    <header class="scan-header">
+
+        <button
+            type="button"
+            class="back-button"
+            onclick="goBackHome()"
+        >
+            ←
+        </button>
+
+        <div>
+            <h1>Scan & Pay</h1>
+            <p>Scan a FacePay campus merchant QR</p>
+        </div>
+
+    </header>
+
+    <main class="scan-page">
+
+        <!-- Wallet information -->
+        <section class="wallet-summary">
+
+            <div>
+                <span>Available Balance</span>
+                <h2 id="available-balance">₹0.00</h2>
+            </div>
+
+            <div class="wallet-symbol">
+                ₹
+            </div>
+
+        </section>
+
+        <!-- QR scanner section -->
+        <section
+            id="scanner-section"
+            class="scanner-card"
+        >
+
+            <div class="section-heading">
+                <h2>Scan Merchant QR</h2>
+
+                <p>
+                    Place the QR code inside the camera frame.
+                </p>
+            </div>
+
+            <div id="qr-reader"></div>
+
+            <div
+                id="scanner-status"
+                class="scanner-status"
+            >
+                Starting camera...
+            </div>
+
+            <button
+                id="restart-scanner-button"
+                type="button"
+                class="secondary-button hidden"
+                onclick="restartScanner()"
+            >
+                Scan Again
+            </button>
+
+        </section>
+
+        <!-- Merchant and amount section -->
+        <section
+            id="payment-section"
+            class="payment-card hidden"
+        >
+
+            <div class="merchant-success-icon">
+                ✓
+            </div>
+
+            <p class="paying-label">
+                Paying to
+            </p>
+
+            <h2 id="merchant-name">
+                Merchant
+            </h2>
+
+            <p
+                id="merchant-id"
+                class="merchant-id"
+            ></p>
+
+            <div class="amount-section">
+
+                <label for="payment-amount">
+                    Enter Amount
+                </label>
+
+                <div class="amount-input">
+
+                    <span>₹</span>
+
+                    <input
+                        id="payment-amount"
+                        type="number"
+                        min="1"
+                        step="1"
+                        inputmode="decimal"
+                        placeholder="0"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <span
+                    id="amount-error"
+                    class="error-message"
+                ></span>
+
+            </div>
+
+            <button
+                id="continue-button"
+                type="button"
+                class="continue-button"
+                onclick="continueToFaceVerification()"
+            >
+                Continue
+            </button>
+
+            <button
+                type="button"
+                class="change-merchant-button"
+                onclick="restartScanner()"
+            >
+                Scan another QR
+            </button>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
