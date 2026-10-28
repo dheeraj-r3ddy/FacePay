@@ -1,4 +1,5 @@
 # FacePay - The face recognition based transaction system
+Facial Recognition Based Payment System
 
 ## Overview
 
